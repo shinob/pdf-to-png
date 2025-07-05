@@ -1,0 +1,16 @@
+[Unit]
+Description=Convert PDF to PNG
+After=network-online.target
+
+[Service]
+WorkingDirectory=/path/to/pdf-to-png/
+ExecStart=/usr/bin/python3 /path/to/pdf-to-png/app.py
+User=[username]
+Group=[groupname]
+Restart=always
+RestartSec=3
+Environment="PATH=/path/to/pdf-to-png/"
+
+[Install]
+WantedBy=default.target
+
