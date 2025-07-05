@@ -9,13 +9,14 @@ class PrefixMiddleware(object):
         self.prefix = prefix
 
     def __call__(self, environ, start_response):
-        if environ['PATH_INFO'].startswith(self.prefix):
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+        path = environ.get('PATH_INFO', '')
+        if path.startswith(self.prefix):
+            environ['PATH_INFO'] = path[len(self.prefix):]
+            # Ensure the path info starts with a / for routing
+            if not environ['PATH_INFO'].startswith('/'):
+                environ['PATH_INFO'] = '/' + environ['PATH_INFO']
             environ['SCRIPT_NAME'] = self.prefix
-            return self.app(environ, start_response)
-        else:
-            start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
-            return [("Not Found: The URL path doesn't start with the configured prefix.").encode('utf-8')]
+        return self.app(environ, start_response)
 
 app = Flask(__name__)
 
