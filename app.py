@@ -54,7 +54,10 @@ def convert_pdf_to_base64_images(pdf_bytes):
                 pix = page.getPixmap(matrix=matrix)
             
             # PNGデータをメモリ上のバイトバッファに書き出す
-            img_bytes = pix.tobytes("png")
+            if hasattr(pix, 'tobytes'):
+                img_bytes = pix.tobytes("png")
+            else:
+                img_bytes = pix.getImageData("png")
             
             # Base64にエンコードして、HTMLで使える形式にする
             base64_encoded = base64.b64encode(img_bytes).decode('utf-8')
