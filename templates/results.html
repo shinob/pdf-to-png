@@ -26,6 +26,6 @@
             <img src="{{ image_data_url }}" alt="変換された画像 {{ loop.index }}">
         {% endfor %}
     </div>
-    <a href="/" class="back-link">別のファイルを変換する</a>
+    <a href="{{ url_for('upload_file') }}" class="back-link">別のファイルを変換する</a>
 </body>
 </html>

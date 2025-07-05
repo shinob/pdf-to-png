@@ -3,7 +3,25 @@ import base64
 import fitz  # PyMuPDF
 from flask import Flask, request, render_template, redirect, url_for
 
+class PrefixMiddleware(object):
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        if environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+            return self.app(environ, start_response)
+        else:
+            start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
+            return [("Not Found: The URL path doesn't start with the configured prefix.").encode('utf-8')]
+
 app = Flask(__name__)
+
+# Nginxのサブルート設定に合わせてプレフィックスを適用
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/pdf2png')
+
 
 # メモリ使用量の上限を設定（例: 16MB）
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -22,7 +40,7 @@ def convert_pdf_to_base64_images(pdf_bytes):
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
         for page_num in range(len(doc)):
-            page = doc.load_page(page_num)
+            page = doc[page_num]  # ページをインデックスで取得
             pix = page.get_pixmap(dpi=200) # DPIを少し下げてメモリ使用量を調整
             
             # PNGデータをメモリ上のバイトバッファに書き出す

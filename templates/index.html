@@ -15,7 +15,7 @@
 </head>
 <body>
     <h1>PDF to PNG 変換ツール</h1>
-    <form method=post enctype=multipart/form-data class="upload-form">
+    <form method=post enctype=multipart/form-data action="{{ url_for('upload_file') }}" class="upload-form">
       <input type=file name=file>
       <input type=submit value=アップロードして変換>
     </form>
