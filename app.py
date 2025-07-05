@@ -43,7 +43,13 @@ def convert_pdf_to_base64_images(pdf_bytes):
 
         for page_num in range(len(doc)):
             page = doc[page_num]  # ページをインデックスで取得
-            pix = page.get_pixmap(dpi=200) # DPIを少し下げてメモリ使用量を調整
+            # PyMuPDFのバージョン互換性対応
+            if hasattr(page, 'get_pixmap'):
+                # 新しいバージョン (snake_case)
+                pix = page.get_pixmap(dpi=200)
+            else:
+                # 古いバージョン (camelCase)
+                pix = page.getPixmap(dpi=200)
             
             # PNGデータをメモリ上のバイトバッファに書き出す
             img_bytes = pix.tobytes("png")
