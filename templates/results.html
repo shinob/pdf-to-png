@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>変換結果</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f9; }
+        h1 { text-align: center; color: #333; }
+        .gallery { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px; }
+        .gallery img { 
+            max-width: 80%; 
+            height: auto; 
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        .back-link { display: block; text-align: center; margin-top: 40px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <h1>変換結果</h1>
+    <div class="gallery">
+        {% for image_data_url in images %}
+            <img src="{{ image_data_url }}" alt="変換された画像 {{ loop.index }}">
+        {% endfor %}
+    </div>
+    <a href="/" class="back-link">別のファイルを変換する</a>
+</body>
+</html>

@@ -1,0 +1,23 @@
+
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF to PNG 変換</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 40px; }
+        h1 { color: #333; }
+        .upload-form { margin-top: 40px; }
+        input[type=file] { border: 1px solid #ccc; padding: 10px; }
+        input[type=submit] { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>PDF to PNG 変換ツール</h1>
+    <form method=post enctype=multipart/form-data class="upload-form">
+      <input type=file name=file>
+      <input type=submit value=アップロードして変換>
+    </form>
+</body>
+</html>
