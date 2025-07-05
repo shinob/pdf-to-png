@@ -31,7 +31,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'pdf'}
 
 def allowed_file(filename):
-    return '.' in filename and            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def convert_pdf_to_base64_images(pdf_bytes):
     """メモリ上のPDFデータをBase64エンコードされたPNG画像のリストに変換する"""
@@ -54,9 +55,10 @@ def convert_pdf_to_base64_images(pdf_bytes):
         
         doc.close()
     except Exception as e:
-        print(f"Error converting PDF from memory: {e}")
-        return []
-    return base64_images
+        error_message = f"PDF変換中にエラーが発生しました: {e}"
+        print(error_message)
+        return None, error_message
+    return base64_images, None
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -71,13 +73,15 @@ def upload_file():
             pdf_bytes = file.read()
             
             # メモリ上で変換処理を実行
-            images_data = convert_pdf_to_base64_images(pdf_bytes)
+            images_data, error = convert_pdf_to_base64_images(pdf_bytes)
 
-            if images_data:
+            if images_data is not None:
                 # 結果を直接テンプレートに渡してレンダリング
                 return render_template('results.html', images=images_data)
             else:
-                return "変換に失敗しました。PDFファイルが破損している可能性があります。"
+                # エラーメッセージをユーザーに表示
+                user_error_message = f"変換に失敗しました。PDFファイルが破損しているか、サポートされていない形式の可能性があります。<br><br>詳細情報: {error}"
+                return user_error_message, 400
 
     return render_template('index.html')
 
