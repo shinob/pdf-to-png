@@ -1,24 +1,68 @@
+{% extends "base.html" %}
 
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PDF to PNG 変換</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 40px; }
-        h1 { color: #333; }
-        .upload-form { margin-top: 40px; }
-        input[type=file] { border: 1px solid #ccc; padding: 10px; }
-        input[type=submit] { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <h1>PDF to PNG 変換ツール</h1>
-    <form method=post enctype=multipart/form-data action="{{ url_for('upload_file') }}" class="upload-form">
-      <input type=file name=file>
-      <input type=submit value=アップロードして変換>
+{% block title %}PDF to PNG 変換{% endblock %}
+
+{% block head_extra %}
+<style>
+    .upload-form {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: inline-block; /* フォームの幅を内容に合わせる */
+        max-width: 90%; /* モバイルでの表示を考慮 */
+        width: 500px; /* デスクトップでの最大幅 */
+    }
+    input[type=file] {
+        display: block;
+        width: calc(100% - 22px); /* paddingとborderを考慮 */
+        padding: 10px;
+        margin: 0 auto 20px auto;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box; /* paddingとborderをwidthに含める */
+        font-size: 1em;
+    }
+    input[type=submit] {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+    }
+    input[type=submit]:hover {
+        background-color: #0056b3;
+    }
+    p {
+        margin-top: 20px;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    /* モバイル対応 */
+    @media (max-width: 600px) {
+        .upload-form {
+            padding: 15px;
+        }
+        input[type=file],
+        input[type=submit] {
+            font-size: 0.9em;
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-form">
+    <form method=post enctype=multipart/form-data action="{{ url_for('upload_file') }}">
+        <input type=file name=file accept="application/pdf">
+        <input type=submit value="アップロードして変換">
     </form>
-    <p style="margin-top: 20px; color: #666;">※ 最大ファイルサイズ: 30MB</p>
-</body>
-</html>
+    <p>※ 最大ファイルサイズ: 30MB</p>
+</div>
+{% endblock %}
