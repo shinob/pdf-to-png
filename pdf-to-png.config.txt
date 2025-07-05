@@ -1,3 +1,5 @@
+client_max_body_size 35M;
+
 location /pdf2png/ {
   proxy_pass http://127.0.0.1:5000/pdf2png/;
   proxy_set_header Host $host;

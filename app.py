@@ -24,8 +24,10 @@ app = Flask(__name__)
 app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/pdf2png')
 
 
-# メモリ使用量の上限を設定（例: 16MB）
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# メモリ使用量の上限を設定（例: 30MB）
+# 1GB RAMのWebサーバーで動作させる場合、PDFのページ数や内容により変動しますが、
+# 安全な上限として30MB程度を推奨します。
+app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 
 # 許可する拡張子
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -46,10 +48,10 @@ def convert_pdf_to_base64_images(pdf_bytes):
             # PyMuPDFのバージョン互換性対応
             if hasattr(page, 'get_pixmap'):
                 # 新しいバージョン (snake_case)
-                pix = page.get_pixmap(dpi=200)
+                pix = page.get_pixmap(dpi=300)
             else:
                 # 古いバージョン (camelCase) - dpi引数の代わりにmatrixを使用
-                zoom = 200 / 72  # 200 DPI相当のズーム率を計算
+                zoom = 300 / 72  # 300 DPI相当のズーム率を計算
                 matrix = fitz.Matrix(zoom, zoom)
                 pix = page.getPixmap(matrix=matrix)
             
