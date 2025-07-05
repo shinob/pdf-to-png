@@ -48,8 +48,10 @@ def convert_pdf_to_base64_images(pdf_bytes):
                 # 新しいバージョン (snake_case)
                 pix = page.get_pixmap(dpi=200)
             else:
-                # 古いバージョン (camelCase)
-                pix = page.getPixmap(dpi=200)
+                # 古いバージョン (camelCase) - dpi引数の代わりにmatrixを使用
+                zoom = 200 / 72  # 200 DPI相当のズーム率を計算
+                matrix = fitz.Matrix(zoom, zoom)
+                pix = page.getPixmap(matrix=matrix)
             
             # PNGデータをメモリ上のバイトバッファに書き出す
             img_bytes = pix.tobytes("png")
