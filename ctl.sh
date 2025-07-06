@@ -1,11 +1,35 @@
 #!/usr/bin/env bash
 
+# Define the service name and the service file in the current directory
+SERVICE_NAME="pdf2png.service" # This is the name systemd will use
+SERVICE_FILE="pdf-to-png.service" # This is the actual file in this directory
+
+# Get the absolute path to the service file in the current directory
+SERVICE_FILE_PATH="$(pwd)/${SERVICE_FILE}"
+
+# Define the target path for the systemd service file
+SYSTEMD_SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}"
+
 function init () {
-  echo "Initializing pdf-to-png service..."
-  sudo ln -s /var/www/pdf-to-png/pdf-to-png.service /etc/systemd/system/pdf2png.service
+  echo "Initializing ${SERVICE_NAME} service..."
+  # Check if the service file exists in the current directory
+  if [ ! -f "${SERVICE_FILE_PATH}" ]; then
+    echo "Error: Service file '${SERVICE_FILE}' not found at '${SERVICE_FILE_PATH}'."
+    echo "Please ensure '${SERVICE_FILE}' exists in the current directory."
+    exit 1
+  fi
+
+  # Create a symbolic link to the systemd directory
+  echo "Creating symbolic link from '${SERVICE_FILE_PATH}' to '${SYSTEMD_SERVICE_PATH}'..."
+  sudo ln -s "${SERVICE_FILE_PATH}" "${SYSTEMD_SERVICE_PATH}"
+
+  echo "Reloading systemd daemon..."
   sudo systemctl daemon-reload
-  sudo systemctl enable pdf2png.service
-  echo "Initialization complete. You can now start the service using 'ctl.sh start'."
+
+  echo "Enabling ${SERVICE_NAME} service..."
+  sudo systemctl enable "${SERVICE_NAME}"
+
+  echo "Initialization complete. You can now start the service using '$0 start'."
 }
 
 function execute_command () {
@@ -14,8 +38,8 @@ function execute_command () {
     echo "Usage: $0 [init|start|stop|restart|status]"
     exit 1
   fi
-  echo "Executing systemctl $1 pdf2png.service..."
-  sudo systemctl "$1" pdf2png.service
+  echo "Executing systemctl $1 ${SERVICE_NAME}..."
+  sudo systemctl "$1" "${SERVICE_NAME}"
 }
 
 case "$1" in
